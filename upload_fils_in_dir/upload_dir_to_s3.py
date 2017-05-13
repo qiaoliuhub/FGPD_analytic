@@ -48,7 +48,7 @@ class upload_to_s3(object):
 
 
 if __name__ == "__main__":
-        logger=logging.basicConfig(filename='UploadingToS3.log', level=logging.DEBUG)
+        logging.basicConfig(filename='UploadingToS3.log', level=logging.DEBUG)
         try:
             Config = ConfigParser.RawConfigParser()
             Config.read("application.cfg")
@@ -65,7 +65,7 @@ if __name__ == "__main__":
             PART_SIZE = Config.getint("SectionOne", "PART_SIZE")
 
         except:
-            logging.error("No configuration file is found.")
+            logging.error("No configuration file is found or the data has wrong type.")
             raise
 
         #Build the connection to S3
