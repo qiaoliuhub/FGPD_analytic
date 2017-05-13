@@ -1,12 +1,9 @@
 import boto
 import boto.s3
-
+import logging
 import os.path
 import sys
 import ConfigParser
-
-
-
 
 class upload_to_s3(object):
 
@@ -25,25 +22,25 @@ class upload_to_s3(object):
             for filename in files:
                 sourcepath = os.path.join(local_Dir, filename)
                 destpath = os.path.join(self.destDir, filename)
-                print "Uploading %s to Amazon S3 bucket %s" % (sourcepath, self.bucket_name)
+                logging.debug ("Uploading %s to Amazon S3 bucket %s" % (sourcepath, self.bucket_name))
 
                 filesize = os.path.getsize(sourcepath)
                 if filesize > MAX_SIZE:
                     # Upload big files in multiple parts
-                    print "multipart upload"
+                    logging.debug ("multipart upload")
                     mp = bucket.initiate_multipart_upload(destpath)
                     fp = open(sourcepath,'rb')                        
                     fp_num = 0
                     while (fp.tell() < filesize):
                         fp_num += 1
-                        print "uploading part %i" %fp_num
+                        logging.debug ("uploading part %i" %fp_num)
                         mp.upload_part_from_file(fp, fp_num, cb=self.percent_cb, num_cb=10, size=PART_SIZE)
 
                     mp.complete_upload()
 
                 else:
                     # Upload small files
-                    print "singlepart upload"
+                    logging.debug("singlepart upload")
                     k = boto.s3.key.Key(bucket)
                     k.key = destpath
                     k.set_contents_from_filename(sourcepath,
@@ -51,31 +48,32 @@ class upload_to_s3(object):
 
 
 if __name__ == "__main__":
-    try:
-        Config = ConfigParser.RawConfigParser()
-        Config.read("application.cfg")
-    except:
-        print "Missing configureation file"
-        raise
+        logger=logging.basicConfig(filename='UploadingToS3.log', level=logging.DEBUG)
+        try:
+            Config = ConfigParser.RawConfigParser()
+            Config.read("application.cfg")
+            # specify source directory and destination directory name (on s3)
+            sourceDir = Config.get("SectionOne", "sourceDir")
+            destDir = Config.get("SectionOne", "destDir")
+            bucket_name = Config.get("SectionOne", "Bucket")
+            AWS_ACCESS_KEY_ID = Config.get("SectionOne", "AWS_ACCESS_KEY_ID")
+            AWS_ACCESS_KEY_SECRET = Config.get("SectionOne", "AWS_ACCESS_KEY_SECRET")
 
-    # specify source directory and destination directory name (on s3)
-    sourceDir = Config.get("SectionOne", "sourceDir")
-    print sourceDir
-    destDir = Config.get("SectionOne", "destDir")
-    bucket_name = Config.get("SectionOne", "Bucket")
-    AWS_ACCESS_KEY_ID = Config.get("SectionOne", "AWS_ACCESS_KEY_ID")
-    AWS_ACCESS_KEY_SECRET = Config.get("SectionOne", "AWS_ACCESS_KEY_SECRET")
+            #max size in bytes before uploading in parts. between 1 and 5 GB recommended
+            MAX_SIZE = Config.getint("SectionOne", "MAX_SIZE")
+            #size of parts when uploading in parts
+            PART_SIZE = Config.getint("SectionOne", "PART_SIZE")
 
-    #max size in bytes before uploading in parts. between 1 and 5 GB recommended
-    MAX_SIZE = Config.getint("SectionOne", "MAX_SIZE")
-    #size of parts when uploading in parts
-    PART_SIZE = Config.getint("SectionOne", "PART_SIZE")
+        except:
+            logging.error("No configuration file is found.")
+            raise
 
-    try:
         #Build the connection to S3
-        conn = boto.connect_s3(AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY_SECRET)
-        bucket = conn.get_bucket(bucket_name)
-        uploader=upload_to_s3(sourceDir, destDir, bucket_name)
-        uploader.upload_dir()
-    except:
-        raise
+        try:
+            conn = boto.connect_s3(AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY_SECRET)
+            bucket = conn.get_bucket(bucket_name)
+            uploader=upload_to_s3(sourceDir, destDir, bucket_name)
+            uploader.upload_dir()
+        except:
+            logging.error("Connection was not built successfully with S3")
+            raise

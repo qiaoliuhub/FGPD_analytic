@@ -66,7 +66,6 @@ class Command(BaseCommand):
                     # Find links for this fiscal year
                     r = requests.get(os.path.join(BASE_SEARCH_URL, link[0]), headers=SCRAPE_HEADERS)
                     agency_links = self.get_links(r.text)
-                    # print agency_links
                     sleep(1)
 
                     for a in agency_links:
@@ -81,7 +80,6 @@ class Command(BaseCommand):
                             for link in zip_links:
                                 if link[1]:
                                     file_name = link[0].split('/')[-1].split('.')[0]
-                                    print file_name
                                     download_path = os.path.join('https://www.fpds.gov/ddps/', link[0].replace('../', ''))
                                     destination_path = os.path.join(fy_path, file_name)
                                     if not os.path.exists(destination_path):
