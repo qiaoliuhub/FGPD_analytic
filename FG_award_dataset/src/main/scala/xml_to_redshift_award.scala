@@ -6,6 +6,7 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions.{col, concat, lit, udf}
 import com.typesafe.config._
 import scala.collection.JavaConversions._
+import org.apache.log4j._
 
 
 
@@ -25,6 +26,8 @@ object xml_to_redshift_award {
     }
     
     def main(args: Array[String]) {
+
+        val log = org.apache.log4j.LogManager.getLogger("ApplicationLogger")
 
         try {
 
@@ -71,7 +74,7 @@ object xml_to_redshift_award {
             
             val rename=renameList.toList.toMap
         
-            //Cut off "ns1:" in each column_name
+            //Rename column if needed
             val contract_table_schema = contract_schema
                         .map(name => name.as(rename.getOrElse(name.toString, name.toString)))
                         .map(name => name.as(name.toString.substring(name.toString.lastIndexOf(":")+1, name.toString.length()-1)))
@@ -133,9 +136,12 @@ object xml_to_redshift_award {
                     .save()
             }
             catch{
-                case fe: FileNotFoundException => {println ("Got a Missing File Exception:"+ fe.getstacktrace)}
-                case urle: MalformedURLException => {println ("Got a BadURLException:"+ urle.getstacktrace)}
-                case e: Exception => {println ("Got an Exception:"+ e.getstacktrace)}
+                case ae: AnalysisException => {log.error("Can't resolve column name: " + ae.toString, ae)}
+                case ce: ConfigException => {log.error("Values in configuration file are missing or in wrong types: " + ce.origin(), ce)}
+                case se: SparkException => {log.error(se.toString(), se)}
+                case fe: FileNotFoundException => {log.error ("Missing files:"+ fe.toString(), fe)}
+                case urle: MalformedURLException => {log.error ("Got a bad URL:"+ urle.toString(), urle)}
+                case e: Exception => {log.error ("Got an Exception:"+ e.toString(), e)}
             }
             finally{
                 sc.stop()
