@@ -35,7 +35,7 @@ Data was downloaded by runing the command below
 $python manage.py download_xmls
 ```
 
-Then data was uploaded to AWS S3 with upload_dir_to_s3.py. Below is an example for the configure file:
+Then data was uploaded to AWS S3 with upload_dir_to_s3.py. This module can also be used if the raw data is originally saved in a local machine or EC2. Below is an example for the configure file:
 ```
 [SectionOne]
 sourceDir: SOURCEDIR
