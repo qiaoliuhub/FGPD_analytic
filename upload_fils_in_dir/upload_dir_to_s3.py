@@ -1,3 +1,7 @@
+########################################################################################################
+# This file is intended to upload local files or EC2 files within source director to AWS S3.
+########################################################################################################
+
 import boto
 import boto.s3
 import logging
