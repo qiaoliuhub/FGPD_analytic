@@ -64,3 +64,5 @@ This architecture allows for the separation of resources used for storage and co
 </p>
 
 This architecture allows for the separation of resources used for storage and computation. The majority of data remains on S3 while Spectrum and Redshift nodes are used for computation. These two choices are much cost effective than running a single large redshift cluster.
+
+[Presentation](https://www.slideshare.net/secret/a48c4QCqiq5Cgc)
