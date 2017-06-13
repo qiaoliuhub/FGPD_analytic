@@ -1,5 +1,16 @@
 ########################################################################################################
 # This file is intended to upload local files or EC2 files within source director to AWS S3.
+# 
+# The following parameters are inputted from configration file:
+#
+# [SectionOne]
+# sourceDir: SOURCEDIR
+# destDir: DESTDIR
+# Bucket: BUCKET_NAME
+# AWS_ACCESS_KEY_ID: aws_access_key
+# AWS_ACCESS_KEY_SECRET: aws_access_key_secret
+# MAX_SIZE: max_size
+# PART_SIZE: part_size
 ########################################################################################################
 
 import boto
