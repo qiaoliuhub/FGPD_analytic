@@ -1,3 +1,9 @@
+##############################################################################################################################
+#This application is intended to download federal government contract data using django-admin. Just add a management/commands 
+#directory to the application shown in README. Django will register a manage.py command for this Python module in that 
+#directory
+##############################################################################################################################
+
 import os
 import re
 import logging
