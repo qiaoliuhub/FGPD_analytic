@@ -1,7 +1,9 @@
 /** This is a brief introduction for this pipeline.
- *  The data was saved to S3 using Spark data frames and then loaded to Redshift.
+ *  Vendor table and Contract table was extracted from parsed XML files, saved to S3 using 
+ *  Spark data frames and then loaded to Redshift.
  *  
- *  ACCESS_KEY, SECRET_KEY, S3_bucket, JDBC_URL was inputted from configuration file with the following format:
+ *  ACCESS_KEY, SECRET_KEY, S3_bucket, JDBC_URL was inputted from configuration file with 
+ *  the following format:
  *  my.aws {
  *  ACCESS_KEY="access_key"
  *  SECRET_KEY="secret_key"
