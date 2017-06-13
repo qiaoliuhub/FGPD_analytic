@@ -49,7 +49,7 @@ PART_SIZE: part_size
 
 ## Redshift
 
-After extracting data from the federal contract system, I wrote the data to S3 using Spark data frames and then load it to Redshift.
+After extracting contract and vendor data from the federal contract system, I write the data to S3 using Spark data frames and then load it to Redshift.
 
 <p align="center">
   <img src="/Picture1.png" width="900"/>
