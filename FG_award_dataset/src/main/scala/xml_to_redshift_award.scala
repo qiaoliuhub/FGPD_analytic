@@ -1,3 +1,15 @@
+/** This is a brief introduction for this pipeline.
+ *  The data was saved to S3 using Spark data frames and then loaded to Redshift.
+ *  
+ *  ACCESS_KEY, SECRET_KEY, S3_bucket, JDBC_URL was inputted from configuration file with the following format:
+ *  my.aws {
+ *  ACCESS_KEY="access_key"
+ *  SECRET_KEY="secret_key"
+ *  S3_bucket="bucket_url"
+ *  JDBC_URL="redshift_jdbc_URL"
+ *  }
+ */
+
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkConf
